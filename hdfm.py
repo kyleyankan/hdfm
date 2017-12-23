@@ -276,6 +276,11 @@ while True:
     if save != "":
         if traffic_save_check == [1] * 9:
             t = datetime.datetime.now().strftime("%m-%d-%Y %I-%M-%S %p")
+	    #add datetime stamp to traffic
+            font = ImageFont.truetype(font_dir, 25)
+            draw = ImageDraw.Draw(traffic_final)
+            draw.text((400, 450), t, font=font, fill='black')
+
             traffic_final.save(os.path.abspath(save) +
                                "/Traffic Map " + t + ".png")
             # Reset the tile update tracker.
