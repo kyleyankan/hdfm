@@ -71,7 +71,7 @@ def getUSMap(lat1, lon1, lat2, lon2):
     # latitudinal lines on a mercator map increase exponentially.
     y_top_coord = math.asinh(math.tan(math.radians(52.482780)))
 
-7    # Convert top and bottom bound of weather map to the same linear form
+    # Convert top and bottom bound of weather map to the same linear form
     # described above.
     lat1 = y_top_coord - math.asinh(math.tan(math.radians(lat1)))
     lat2 = y_top_coord - math.asinh(math.tan(math.radians(lat2)))
