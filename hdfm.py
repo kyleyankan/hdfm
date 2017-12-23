@@ -50,6 +50,7 @@ Option        Meaning
  -c <channel>  HDFM channel, for stations with subchannels (default = 1)
  -p <ppm>      PPM error correction (default = 0)
  -s <dir>      Directory to save weather and traffic images to (default = none)
+ -d <device>   RTL-SDR Device Index (default = 0)
  -l <1-3>      Log level output from nrsc5 (default = 3, only debug info)\n""")
 
 
@@ -57,7 +58,7 @@ Option        Meaning
 # directory, frequency, HDFM channel, ppm correction, and log level.
 def startNRSC5(dump_dir, freq, channel, ppm, log_level):
     subprocess.call(["nrsc5", "-l", log_level, "-p", ppm,
-                     "--dump-aas-files", dump_dir, freq, channel])
+                     "--dump-aas-files", dump_dir, "-d", device, freq, channel])
 
 
 # Takes coordinates from the weather config and returns a map of the area
@@ -70,7 +71,7 @@ def getUSMap(lat1, lon1, lat2, lon2):
     # latitudinal lines on a mercator map increase exponentially.
     y_top_coord = math.asinh(math.tan(math.radians(52.482780)))
 
-    # Convert top and bottom bound of weather map to the same linear form
+7    # Convert top and bottom bound of weather map to the same linear form
     # described above.
     lat1 = y_top_coord - math.asinh(math.tan(math.radians(lat1)))
     lat2 = y_top_coord - math.asinh(math.tan(math.radians(lat2)))
@@ -150,6 +151,7 @@ channel = "0"
 ppm = "0"
 save = ""
 log_level = "3"
+device="0"
 
 # If no arguments are entered, print the help page.
 if len(sys.argv) == 1:
@@ -162,6 +164,8 @@ for arg in range(len(sys.argv)):
         channel = sys.argv[arg + 1]
     elif sys.argv[arg] == "-p":
         ppm = sys.argv[arg + 1]
+    elif sys.argv[arg] == "-d":
+        device = sys.argv[arg + 1]
     elif sys.argv[arg] == "-s":
         save = sys.argv[arg + 1]
     elif sys.argv[arg] == "-l":
@@ -203,7 +207,7 @@ traffic.update()
 # Start a thread for nrsc5, so that when this script is stopped, nrsc5 is
 # stopped as well.
 nrsc_thread = threading.Thread(target=startNRSC5,
-                               args=(dump_dir, freq, channel, ppm, log_level))
+                               args=(dump_dir, freq, channel, ppm, log_level, device))
 nrsc_thread.start()
 
 # Used to keep track of when all the traffic tiles are updated.
